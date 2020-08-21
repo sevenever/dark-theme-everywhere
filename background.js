@@ -15,32 +15,16 @@
 	// from content scripts, so our background script acts as a dispatcher to
 	// the active tab.
 	function toggleClient (tab, skipExclusion) {
-		var cb = skipExclusion
-			? function (response) {response && setIcon(response.isDark);}
-			: handleManualToggle;
-		chrome.tabs.sendMessage(tab.id, {type: 'com.rileyjshaw.dte__TOGGLE'}, cb);
+        var isDark = !('dark' == global.localStorage.getItem('theme'));
+        global.localStorage.setItem("theme", (isDark ? 'dark' : 'light'));
+        chrome.tabs.query({}, function(tabs) {
+            for (var i=0; i<tabs.length; i++) {
+                chrome.tabs.sendMessage(tabs[i].id, {type: 'com.rileyjshaw.dte__TOGGLE', isDark: isDark});
+            }
+        });
+        setIcon(isDark);
 	}
 	chrome.browserAction.onClicked.addListener(toggleClient);
-
-	// If the toggle button is clicked manually, we add or remove the active
-	// site's subdomain to/from the exceptions list. This ensures that the
-	// toggled state persists on future visits to the page.
-	function handleManualToggle (response) {
-		var url = response.url;
-		var isDark = response.isDark;
-
-		// Strip the protocol and trailing slashes.
-		var toStrip = /(?:.*:\/\/)?(?:www\.)?(.*?)\/*$/;
-		var exceptions = getExceptions();
-		var newExceptions = isException(url, exceptions)
-			? exceptions.filter(function (exception) {
-				return exception.replace(toStrip, '$1') !== url.replace(toStrip, '$1');
-			})
-			: exceptions.concat(url);
-
-		global.localStorage.setItem('exceptions', newExceptions.join('\n'));
-		setIcon(isDark);
-	}
 
 	// The active tab will, in turn, let the background script know when it has
 	// loaded new content so that we can re-initialize the tab.
@@ -57,7 +41,7 @@
 			var isDark = isException(sender.url) !== (theme === 'dark');
 
 			setIcon(isDark);
-			if (!isDark) {toggleClient(tab, true);}
+            chrome.tabs.sendMessage(tab.id, {type: 'com.rileyjshaw.dte__TOGGLE', isDark: isDark});
 			if (!darken) {
 				chrome.tabs.sendMessage(
 					tab.id, {type: 'com.rileyjshaw.dte__REMOVE_MEDIA_FILTERS'});

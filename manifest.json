@@ -1,7 +1,7 @@
 {
-	"name": "Dark Theme Everywhere",
+	"name": "Modified Dark Theme Everywhere",
 	"short_name": "Dark Theme",
-	"description": "Darkens bright pages for easier night time reading.  Unofficial improvement of 'Nicer Inverter'.",
+	"description": "Darkens bright pages for easier night time reading.  Unofficial improvement of 'Nicer Inverter'. Modified by sevenever,, the action button is now a global switch.",
 	"background": {
 		"scripts": [ "background.js" ]
 	},

@@ -25,7 +25,8 @@
 				html.classList.add('dark-theme-everywhere-filters-off');
 				break;
 			case 'com.rileyjshaw.dte__TOGGLE':
-				toggle();
+                isDark = request.isDark;
+                html.classList[(isDark ? 'remove' : 'add')]('dark-theme-everywhere-off');
 				if (typeof response === 'function') {
 					response({isDark: isDark, url: global.location.hostname});
 				}
