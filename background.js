@@ -19,7 +19,7 @@
 			}
 		});
 		setIcon(isDark);
-		hub.postMessage({isDark: isDark});
+		hub.postMessage({type: 'message', message: {isDark: isDark}});
 	}
 
 	// Chrome extensions don't currently let you listen to the extension button
@@ -33,8 +33,17 @@
 
 	var hub = chrome.runtime.connect('lbpflkmjndkdjnhomgpmkbfcmbdoefdf')
 	hub.onMessage.addListener(function(msg) {
-		setDark(msg.isDark);
+		switch(msg.type) {
+			case 'response': {
+				console.log(msg.response);
+				break;
+			}
+			case 'message': {
+				setDark(msg.message.isDark);
+			}
+		}
 	});
+	hub.postMessage({type: "connect", hostId: "dark them everywhere host"});
 	// The active tab will, in turn, let the background script know when it has
 	// loaded new content so that we can re-initialize the tab.
 	chrome.runtime.onMessage.addListener(
