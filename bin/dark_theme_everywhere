@@ -1,0 +1,44 @@
+#!/usr/bin/python3
+
+import asyncio
+import json
+import struct
+import sys
+
+'''
+usage:
+dark_theme_everywhere
+or
+dark_theme_everywhere off
+'''
+
+async def tcp_echo_client(message):
+    reader, writer = await asyncio.open_connection(
+        '127.0.0.1', 31888)
+
+    extensionId= 'eohpmleoehlmhfdddpcihdfnipocihjh'
+    hostId= 'dark them everywhere host'
+
+    msg = json.dumps({
+        'registers': [
+            {'extensionId': extensionId, 'hostId': hostId }
+        ]
+    }).encode()
+    writer.write(struct.pack('!I', len(msg)))
+    writer.write(msg)
+    await writer.drain()
+
+    isDark = not (len(sys.argv) == 2 and sys.argv[1] == 'off')
+    msg = json.dumps({
+        'extensionId': extensionId,
+        'hostId': hostId,
+        'message': {'isDark': isDark}
+    }).encode()
+    writer.write(struct.pack('!I', len(msg)))
+    writer.write(msg)
+    await writer.drain()
+
+    writer.close()
+    await writer.wait_closed()
+
+asyncio.run(tcp_echo_client('Hello World!'))
