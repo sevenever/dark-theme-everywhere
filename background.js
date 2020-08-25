@@ -11,21 +11,30 @@
 		global.localStorage.setItem('darken', true);
 	}
 
+	function setDark(isDark) {
+		global.localStorage.setItem("theme", (isDark ? 'dark' : 'light'));
+		chrome.tabs.query({}, function(tabs) {
+			for (var i=0; i<tabs.length; i++) {
+				chrome.tabs.sendMessage(tabs[i].id, {type: 'com.rileyjshaw.dte__TOGGLE', isDark: isDark});
+			}
+		});
+		setIcon(isDark);
+		hub.postMessage({isDark: isDark});
+	}
+
 	// Chrome extensions don't currently let you listen to the extension button
 	// from content scripts, so our background script acts as a dispatcher to
 	// the active tab.
 	function toggleClient (tab, skipExclusion) {
         var isDark = !('dark' == global.localStorage.getItem('theme'));
-        global.localStorage.setItem("theme", (isDark ? 'dark' : 'light'));
-        chrome.tabs.query({}, function(tabs) {
-            for (var i=0; i<tabs.length; i++) {
-                chrome.tabs.sendMessage(tabs[i].id, {type: 'com.rileyjshaw.dte__TOGGLE', isDark: isDark});
-            }
-        });
-        setIcon(isDark);
+        setDark(isDark);
 	}
 	chrome.browserAction.onClicked.addListener(toggleClient);
 
+	var hub = chrome.runtime.connect('lbpflkmjndkdjnhomgpmkbfcmbdoefdf')
+	hub.onMessage.addListener(function(msg) {
+		setDark(msg.isDark);
+	});
 	// The active tab will, in turn, let the background script know when it has
 	// loaded new content so that we can re-initialize the tab.
 	chrome.runtime.onMessage.addListener(
