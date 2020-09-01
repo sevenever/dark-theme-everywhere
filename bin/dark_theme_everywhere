@@ -12,12 +12,12 @@ or
 dark_theme_everywhere off
 '''
 
-async def tcp_echo_client(message):
+async def dark_theme_everywhere_client():
     reader, writer = await asyncio.open_connection(
         '127.0.0.1', 31888)
 
-    extensionId= 'eohpmleoehlmhfdddpcihdfnipocihjh'
-    hostId= 'dark them everywhere host'
+    extensionId = 'adcpebiheefneglgljoallnahojnlmdh'
+    hostId = 'dark theme everywhere host'
 
     msg = json.dumps({
         'registers': [
@@ -41,4 +41,4 @@ async def tcp_echo_client(message):
     writer.close()
     await writer.wait_closed()
 
-asyncio.run(tcp_echo_client('Hello World!'))
+asyncio.run(dark_theme_everywhere_client())

@@ -31,7 +31,7 @@
 	}
 	chrome.browserAction.onClicked.addListener(toggleClient);
 
-	var hub = chrome.runtime.connect('lbpflkmjndkdjnhomgpmkbfcmbdoefdf')
+	var hub = chrome.runtime.connect('lgbnalflfndfhedoedafafahdnccaeid')
 	hub.onMessage.addListener(function(msg) {
 		switch(msg.type) {
 			case 'response': {
@@ -43,7 +43,7 @@
 			}
 		}
 	});
-	hub.postMessage({type: "connect", hostId: "dark them everywhere host"});
+	hub.postMessage({type: "connect", hostId: "dark theme everywhere host"});
 	// The active tab will, in turn, let the background script know when it has
 	// loaded new content so that we can re-initialize the tab.
 	chrome.runtime.onMessage.addListener(
