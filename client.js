@@ -26,6 +26,8 @@
 				break;
 			case 'com.rileyjshaw.dte__TOGGLE':
                 isDark = request.isDark;
+                html.classList.remove(specificityHelper);
+                html.classList.add(specificityHelper);
                 html.classList[(isDark ? 'remove' : 'add')]('dark-theme-everywhere-off');
 				if (typeof response === 'function') {
 					response({isDark: isDark, url: global.location.hostname});
