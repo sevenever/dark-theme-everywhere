@@ -31,7 +31,10 @@
 	}
 	chrome.browserAction.onClicked.addListener(toggleClient);
 
-	var hub = chrome.runtime.connect('lgbnalflfndfhedoedafafahdnccaeid')
+	// ID of chrome native message hub
+	// https://chrome.google.com/webstore/detail/native-message-hub/ekklkgmocbobcblcgmgaemojomkmhegp
+	var cnmhID = 'ekklkgmocbobcblcgmgaemojomkmhegp';
+	var hub = chrome.runtime.connect(cnmhID);
 	hub.onMessage.addListener(function(msg) {
 		switch(msg.type) {
 			case 'response': {
